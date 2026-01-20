@@ -52,14 +52,11 @@ $$AHI = \frac{\sum (Risk_{i} \times Weight_{i})}{\sigma_{portfolio}} + \Delta ES
 
 ## 🛠️ Tech Stack
 
-| Component | Technology |
-| :--- | :--- |
-| **Frontend** | React, TypeScript, Tailwind CSS, Framer Motion |
-| **Backend** | Python (FastAPI), Node.js (Microservices) |
-| **Database** | PostgreSQL (Relational), Pinecone (Vector DB for AI) |
-| **Open Banking** | Plaid API / TrueLayer |
-| **ML/AI** | OpenAI GPT-4o, Scikit-learn, LangChain |
-| **Cloud** | AWS (Lambda, S3, RDS) |
+| Component | Technology                                        |
+| :--- |:--------------------------------------------------|
+| **Frontend** | Tailwind CSS, HTML                                |
+| **Backend** | Python (Flask)                                    |
+| **Database** |                                                   |
 
 ---
 
