@@ -4,7 +4,6 @@ UK Fin+ Team Great Assets GitHub Repo!
 ``
 ![Header Image](https://via.placeholder.com/1200x400.png?text=Great+Assets+--+The+Future+of+UK+Wealth+Management)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Fintech](https://img.shields.io/badge/Industry-Fintech-blueviolet)](#)
 [![Framework](https://img.shields.io/badge/Framework-Next.js%20%7C%20FastAPI-blue)](#)
 [![Built for](https://img.shields.io/badge/Hackathon-UK%20Finnovator-orange)](https://www.finnovator.uk/)
