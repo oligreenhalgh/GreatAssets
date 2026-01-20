@@ -1,8 +1,6 @@
-# GreatAssets
-UK Fin+ Team Great Assets GitHub Repo!
 # 🏛️ Great Assets | UK Finnovator Challenge 2026
-``
-![Header Image](https://via.placeholder.com/1200x400.png?text=Great+Assets+--+The+Future+of+UK+Wealth+Management)
+
+![Header Image]()
 
 [![Fintech](https://img.shields.io/badge/Industry-Fintech-blueviolet)](#)
 [![Framework](https://img.shields.io/badge/Framework-Next.js%20%7C%20FastAPI-blue)](#)
