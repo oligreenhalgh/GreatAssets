@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Home - Great Assets{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Welcome to Great Assets</h1>
+        <p class="lead">Data from Supabase</p>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                Submit New Data
+            </div>
+            <div class="card-body">
+                <form action="/submit" method="POST">
+                    <div class="mb-3">
+                        <label for="dataInput" class="form-label">Data Payload</label>
+                        <input type="text" class="form-control" id="dataInput" name="payload" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="list-group">
+            {% if data %}
+                {% for item in data %}
+                    <div class="list-group-item">
+                        <pre>{{ item | tojson(indent=2) }}</pre>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">No data found or connection to Supabase not yet configured with valid URL.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
