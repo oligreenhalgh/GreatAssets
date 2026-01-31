@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Insights - CIX{% endblock %}
+{% block page_title %}AI Insights Dashboard{% endblock %}
+
+{% block content %}
+<!-- Investment Thesis Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Investment Thesis</h5>
+            </div>
+            <div class="card-body">
+                {% if has_thesis %}
+                <div class="alert alert-success mb-3">
+                    <i class="bi bi-check-circle"></i> Investment thesis loaded and analyzed
+                </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label for="thesis_file" class="form-label">Upload Investment Thesis (PDF or TXT)</label>
+                            <input class="form-control" type="file" id="thesis_file" name="thesis_file"
+                                accept=".pdf,.txt">
+                            <div class="form-text">
+                                Upload your investment strategy document for AI analysis
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label d-block">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-upload"></i> Upload & Analyze
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if has_thesis %}
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#thesisModal">
+                        <i class="bi bi-eye"></i> View Thesis
+                    </button>
+                    <a href="{{ url_for('view_thesis') }}" download class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-download"></i> Download Default Thesis
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Summary Section -->
+{% if ai_summary %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-primary">
+            <div class="card-header bg-gradient text-white"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h5 class="mb-0"><i class="bi bi-robot"></i> AI Thesis Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary"><i class="bi bi-shield-check"></i> Risk Profile</h6>
+                        <p class="lead">{{ ai_summary.risk_profile }}</p>
+
+                        <h6 class="text-primary mt-3"><i class="bi bi-graph-up"></i> Target ROI</h6>
+                        <p>{{ ai_summary.target_roi }}</p>
+
+                        <h6 class="text-primary mt-3"><i class="bi bi-clock"></i> Investment Horizon</h6>
+                        <p>{{ ai_summary.investment_horizon }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary"><i class="bi bi-pie-chart"></i> Key Sectors</h6>
+                        <ul class="list-unstyled">
+                            {% for sector in ai_summary.key_sectors %}
+                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ sector }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h6 class="text-primary mt-3"><i class="bi bi-geo-alt"></i> Geographic Focus</h6>
+                        <p>{{ ai_summary.geographic_focus }}</p>
+
+                        <h6 class="text-primary mt-3"><i class="bi bi-lightbulb"></i> Strategy</h6>
+                        <p class="small">{{ ai_summary.strategy }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- AI Insights -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-shield-check"></i> Portfolio Analysis</h5>
+            </div>
+            <div class="card-body">
+                <h6>Risk Profile: <span class="badge bg-info">{{ ai_insights.risk_profile }}</span></h6>
+                <div class="progress mt-3" style="height: 25px;">
+                    <div class="progress-bar bg-info" role="progressbar"
+                        style="width: {{ ai_insights.diversification_score }}%">
+                        Diversification: {{ ai_insights.diversification_score }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-stars"></i> AI Recommendations</h5>
+            </div>
+            <div class="card-body">
+                {% for rec in ai_insights.recommendations %}
+                <div
+                    class="alert alert-{{ 'danger' if rec.priority == 'high' else 'warning' if rec.priority == 'medium' else 'info' }} mb-2 py-2">
+                    <strong class="small">{{ rec.title }}</strong><br>
+                    <small>{{ rec.message }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Performance Over Time</h5>
+            </div>
+            <div class="card-body">
+                <div id="performanceChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Sector Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <div id="sectorChart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Investments by Location</h5>
+            </div>
+            <div class="card-body">
+                <div id="locationChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thesis View Modal -->
+<div class="modal fade" id="thesisModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-file-earmark-text"></i> Investment Thesis Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> This is your uploaded investment thesis document
+                </div>
+                <iframe src="{{ url_for('view_thesis') }}"
+                    style="width: 100%; height: 500px; border: 1px solid #ddd; border-radius: 5px;">
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Performance over time (Line chart)
+    const performanceData = {{ performance_data | safe }};
+    const performanceTrace = {
+        x: performanceData.dates,
+        y: performanceData.roi,
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'ROI',
+        line: {
+            color: '#0d6efd',
+            width: 3
+        },
+        marker: {
+            size: 8,
+            color: '#0d6efd'
+        },
+        hovertemplate: '<b>%{text}</b><br>ROI: %{y:.2f}%<br>Date: %{x}<extra></extra>',
+        text: performanceData.assets
+    };
+
+    const performanceLayout = {
+        title: 'Portfolio ROI Trend',
+        xaxis: {
+            title: 'Date',
+            showgrid: true
+        },
+        yaxis: {
+            title: 'ROI (%)',
+            showgrid: true
+        },
+        hovermode: 'closest',
+        plot_bgcolor: '#f8f9fa',
+        paper_bgcolor: '#ffffff'
+    };
+
+    Plotly.newPlot('performanceChart', [performanceTrace], performanceLayout, { responsive: true });
+
+    // Sector breakdown (Pie chart)
+    const sectorData = {{ sector_data | safe }};
+    const sectorTrace = {
+        labels: sectorData.labels,
+        values: sectorData.values,
+        type: 'pie',
+        hole: 0.4,
+        marker: {
+            colors: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997']
+        },
+        textinfo: 'label+percent',
+        hovertemplate: '<b>%{label}</b><br>£%{value:,.2f}<br>%{percent}<extra></extra>'
+    };
+
+    const sectorLayout = {
+        title: 'Investment Distribution by Sector',
+        showlegend: true,
+        plot_bgcolor: '#f8f9fa',
+        paper_bgcolor: '#ffffff'
+    };
+
+    Plotly.newPlot('sectorChart', [sectorTrace], sectorLayout, { responsive: true });
+
+    // Location breakdown (Bar chart)
+    const locationData = {{ location_data | safe }};
+    const locationTrace = {
+        x: locationData.labels,
+        y: locationData.values,
+        type: 'bar',
+        marker: {
+            color: '#198754',
+            opacity: 0.8
+        },
+        hovertemplate: '<b>%{x}</b><br>£%{y:,.2f}<extra></extra>'
+    };
+
+    const locationLayout = {
+        title: 'Investment Distribution by Location',
+        xaxis: {
+            title: 'Location'
+        },
+        yaxis: {
+            title: 'Total Invested (£)'
+        },
+        plot_bgcolor: '#f8f9fa',
+        paper_bgcolor: '#ffffff'
+    };
+
+    Plotly.newPlot('locationChart', [locationTrace], locationLayout, { responsive: true });
+</script>
+{% endblock %}

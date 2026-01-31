@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - CIX{% endblock %}
+{% block page_title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Complete Your Purchase</h5>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-3">{{ bundle.title }}</h4>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Sector:</strong> <span class="badge bg-primary">{{ bundle.sector }}</span></p>
+                        <p><strong>Location:</strong> {{ bundle.location }}</p>
+                        <p><strong>Expected ROI:</strong> <span class="text-success fw-bold">{{ bundle.roi }}%</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Revenue:</strong> £{{ "{:,.0f}".format(bundle.revenue) }}</p>
+                        <p><strong>Assets Included:</strong> {{ bundle.assets | length }}</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border">
+                    <h6>Bundle Description:</h6>
+                    <p class="mb-0">{{ bundle.description }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <h6>Included Assets:</h6>
+                    <ul>
+                        {% for asset in bundle.assets %}
+                        <li>{{ asset }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5>Total Investment:</h5>
+                    <h4 class="text-success mb-0">£{{ "{:,.0f}".format(bundle.revenue) }}</h4>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success btn-lg" onclick="confirmPurchase()">
+                        <i class="bi bi-credit-card"></i> Confirm Purchase
+                    </button>
+                    <a href="{{ url_for('marketplace_buy') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Marketplace
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success message (hidden initially) -->
+        <div id="successMessage" class="card shadow-sm mt-4" style="display: none;">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <h3 class="mt-3">Purchase Successful!</h3>
+                <p class="text-muted">Your investment bundle has been added to your portfolio.</p>
+                <a href="{{ url_for('portfolio') }}" class="btn btn-primary">View Portfolio</a>
+                <a href="{{ url_for('marketplace_buy') }}" class="btn btn-outline-secondary">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmPurchase() {
+        // Simulate purchase process
+        const card = document.querySelector('.card.shadow-sm');
+        const successMsg = document.getElementById('successMessage');
+
+        // Hide purchase card
+        card.style.display = 'none';
+
+        // Show success message
+        successMsg.style.display = 'block';
+
+        // Scroll to success message
+        successMsg.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+{% endblock %}

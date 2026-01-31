@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - CIX{% endblock %}
+{% block page_title %}Business Portfolio Overview{% endblock %}
+
+{% block content %}
+{% if summary %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-success shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title"><i class="bi bi-cash-stack"></i> Total Invested</h6>
+                <h3 class="mb-0">{{ summary.total_invested }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title"><i class="bi bi-graph-up"></i> Average ROI</h6>
+                <h3 class="mb-0">{{ summary.avg_roi }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-primary shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title"><i class="bi bi-collection"></i> Total Businesses</h6>
+                <h3 class="mb-0">{{ summary.asset_count }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if portfolio %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-table"></i> Business Loan Portfolio</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="portfolioTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Sector</th>
+                                <th>Location</th>
+                                <th>Loan Band</th>
+                                <th>ROI Band</th>
+                                <th>Date</th>
+                                <th>Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in portfolio %}
+                            <tr>
+                                <td>{{ item.asset_id }}</td>
+                                <td><span class="badge bg-secondary">{{ item.sector }}</span></td>
+                                <td>{{ item.location }}</td>
+                                <td>
+                                    {% if item.invested < 250000 %} <span class="badge bg-light text-dark">
+                                        £0-250k</span>
+                                        {% elif item.invested < 500000 %} <span class="badge bg-info">£250k-500k</span>
+                                            {% elif item.invested < 750000 %} <span class="badge bg-primary">
+                                                £500k-750k</span>
+                                                {% else %}
+                                                <span class="badge bg-dark">£750k+</span>
+                                                {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.roi < 10 %} <span class="badge bg-warning text-dark">Low (0-10%)</span>
+                                        {% elif item.roi < 15 %} <span class="badge bg-info">Medium (10-15%)</span>
+                                            {% else %}
+                                            <span class="badge bg-success">High (15%+)</span>
+                                            {% endif %}
+                                </td>
+                                <td>{{ item.date }}</td>
+                                <td>
+                                    {% if item.roi >= 15 %}
+                                    <span class="badge bg-success">Low Risk</span>
+                                    {% elif item.roi >= 10 %}
+                                    <span class="badge bg-warning text-dark">Medium Risk</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">High Risk</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i> Unable to load portfolio data. Please check the data file.
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize table sorting
+    {% if portfolio %}
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.getElementById('portfolioTable');
+        if (table) {
+            // Add click handlers for sorting
+            const headers = table.querySelectorAll('th');
+            headers.forEach((header, index) => {
+                header.style.cursor = 'pointer';
+                header.title = 'Click to sort';
+                header.addEventListener('click', () => sortTable(index));
+            });
+        }
+    });
+
+    function sortTable(columnIndex) {
+        const table = document.getElementById('portfolioTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        rows.sort((a, b) => {
+            const aText = a.cells[columnIndex].textContent.trim();
+            const bText = b.cells[columnIndex].textContent.trim();
+            return aText.localeCompare(bText, undefined, { numeric: true });
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+    {% endif %}
+</script>
+{% endblock %}

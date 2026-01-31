@@ -1,0 +1,21 @@
+ID,Asset,Sector,Location,Invested,ROI,Date
+AST001,FinTech Innovate Ltd,Technology,London,250000,18.5,2023-03-15
+AST002,Green Energy Solutions,Energy,Scotland,450000,12.3,2023-01-20
+AST003,BioMed Research,Healthcare,Cambridge,320000,15.7,2023-05-10
+AST004,Urban Developments,Real Estate,Manchester,800000,10.2,2023-02-28
+AST005,Brand Collective,Consumer,Birmingham,180000,14.1,2023-04-05
+AST006,Digital Bank Pro,Finance,Edinburgh,600000,16.8,2023-06-12
+AST007,Smart Factory Ltd,Manufacturing,Leeds,380000,11.5,2023-03-22
+AST008,EduTech Platform,Education,Oxford,210000,13.9,2023-07-01
+AST009,AI Solutions UK,Technology,London,290000,19.2,2023-02-14
+AST010,Solar Farms Ltd,Energy,Scotland,520000,11.8,2023-04-18
+AST011,MedTech Devices,Healthcare,Cambridge,275000,16.3,2023-05-25
+AST012,Property Partners,Real Estate,Manchester,650000,9.8,2023-01-30
+AST013,Consumer Goods Ltd,Consumer,Birmingham,195000,13.5,2023-06-08
+AST014,InsurTech Solutions,Finance,Edinburgh,480000,17.2,2023-03-11
+AST015,AutoMate Systems,Manufacturing,Leeds,310000,12.1,2023-07-15
+AST016,Virtual Academy,Education,Oxford,165000,14.6,2023-02-22
+AST017,CloudTech Partners,Technology,London,340000,20.1,2023-05-03
+AST018,Wind Power Co,Energy,Scotland,580000,10.9,2023-01-12
+AST019,HealthAI Systems,Healthcare,Cambridge,295000,15.9,2023-06-20
+AST020,City Estates,Real Estate,Manchester,720000,11.3,2023-04-27

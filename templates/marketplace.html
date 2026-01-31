@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace - CIX{% endblock %}
+{% block page_title %}Investment Marketplace{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-robot"></i> <strong>AI-Ranked Bundles:</strong> Investment opportunities ranked based on
+            your portfolio and thesis.
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for bundle in bundles %}
+    <div class="col-12 mb-4">
+        <div class="card shadow-sm bundle-card">
+            <div class="card-header bg-gradient text-white"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ bundle.title }}</h5>
+                    {% if bundle.match_score %}
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-star-fill"></i> {{ (bundle.match_score * 100) | round(0) }}% Match
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Left Column: Bundle Overview -->
+                    <div class="col-md-5">
+                        <div class="mb-3">
+                            <span class="badge bg-primary">{{ bundle.sector }}</span>
+                            <span class="badge bg-secondary">{{ bundle.location }}</span>
+                        </div>
+
+                        <p class="text-muted small">{{ bundle.description }}</p>
+
+                        <div class="row text-center mb-3">
+                            <div class="col-6">
+                                <h6 class="text-success mb-0">{{ bundle.roi }}%</h6>
+                                <small class="text-muted">Expected ROI</small>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-primary mb-0">£{{ "{:,.0f}".format(bundle.revenue) }}</h6>
+                                <small class="text-muted">Revenue</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: AI Recommendation -->
+                    <div class="col-md-7">
+                        {% if bundle.ai_recommendation %}
+                        <div class="alert alert-success mb-3">
+                            <h6 class="alert-heading"><i class="bi bi-lightbulb-fill"></i> Why This Bundle?</h6>
+                            <p class="mb-2"><strong>{{ bundle.ai_recommendation.why_recommended }}</strong></p>
+
+                            <hr>
+
+                            <h6 class="mt-2"><i class="bi bi-graph-up"></i> Gap Analysis</h6>
+                            <p class="mb-2 small">{{ bundle.ai_recommendation.gap_analysis }}</p>
+
+                            <h6 class="mt-2"><i class="bi bi-check-circle"></i> Thesis Alignment</h6>
+                            <ul class="small mb-0">
+                                {% for point in bundle.ai_recommendation.thesis_alignment %}
+                                <li>{{ point }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Expandable Asset Details -->
+                <div class="mt-3">
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#assetDetails{{ bundle.id }}">
+                        <i class="bi bi-eye"></i> View Detailed Asset Breakdown
+                    </button>
+                </div>
+
+                <div class="collapse mt-3" id="assetDetails{{ bundle.id }}">
+                    <div class="card card-body bg-light">
+                        <h6 class="mb-3"><i class="bi bi-list-ul"></i> Individual Assets in Bundle</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Asset ID</th>
+                                        <th>Sector</th>
+                                        <th>Location</th>
+                                        <th>Loan Band</th>
+                                        <th>ROI Band</th>
+                                        <th>Risk Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for asset in bundle.detailed_assets %}
+                                    <tr>
+                                        <td><strong>{{ asset.id }}</strong></td>
+                                        <td><span class="badge bg-secondary">{{ asset.sector }}</span></td>
+                                        <td>{{ asset.location }}</td>
+                                        <td>
+                                            {% if '750k+' in asset.loan_band %}
+                                            <span class="badge bg-dark">{{ asset.loan_band }}</span>
+                                            {% elif '500k-750k' in asset.loan_band %}
+                                            <span class="badge bg-primary">{{ asset.loan_band }}</span>
+                                            {% elif '250k-500k' in asset.loan_band %}
+                                            <span class="badge bg-info">{{ asset.loan_band }}</span>
+                                            {% else %}
+                                            <span class="badge bg-light text-dark">{{ asset.loan_band }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if 'High' in asset.roi_band %}
+                                            <span class="badge bg-success">{{ asset.roi_band }}</span>
+                                            {% elif 'Medium' in asset.roi_band %}
+                                            <span class="badge bg-info">{{ asset.roi_band }}</span>
+                                            {% else %}
+                                            <span class="badge bg-warning text-dark">{{ asset.roi_band }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if 'Low Risk' in asset.risk %}
+                                            <span class="badge bg-success">{{ asset.risk }}</span>
+                                            {% elif 'Medium Risk' in asset.risk %}
+                                            <span class="badge bg-warning text-dark">{{ asset.risk }}</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">{{ asset.risk }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('checkout', bundle_id=bundle.id) }}" class="btn btn-success w-100">
+                    <i class="bi bi-cart-plus"></i> Buy Bundle
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    .bundle-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .bundle-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+    }
+</style>
+{% endblock %}
